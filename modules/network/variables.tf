@@ -5,9 +5,7 @@ variable "vpc" {
   })
 }
 
-variable "availability_zones" {
-  type = list(string)
-}
+variable "availability_zones" { type = list(string) }
 
 variable "subnets" {
   type = object({
@@ -16,9 +14,6 @@ variable "subnets" {
     private_netnum = number,
     db_netnum = number,
   })
-
 }
 
-variable "useRDS" {
-  type = bool
-}
+variable "useRDS" { type = bool }

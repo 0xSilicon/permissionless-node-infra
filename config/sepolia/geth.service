@@ -1,0 +1,20 @@
+[Unit]
+Description=Geth Execution Daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/geth --sepolia --http --http.addr 0.0.0.0 --http.vhosts * --http.corsdomain * --http.api eth,web3,net,engine,admin --authrpc.jwtsecret=/home/ssm-user/jwt.hex --datadir=/home/ssm-user/execution
+# To run as user, comment out above and uncomment below, fill in user and group
+User=ssm-user
+
+LimitNOFILE = infinity
+LimitNPROC = infinity
+LimitMEMLOCK = infinity
+Restart=on-failure
+# Specifies which signal to use when killing a service. Defaults to SIGTERM.
+# SIGHUP gives parity time to exit cleanly before SIGKILL (default 90s)
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

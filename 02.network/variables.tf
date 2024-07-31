@@ -1,18 +1,13 @@
-variable "environment" {
-  description = "specify network type"
-  type = string
-  default = "mainnet"
-}
-
 variable "aws_region" {
-    description = "AWS profile name"
-    type        = string
-    default     = "default"
+  description = "AWS region"
+  type = string
+  default = "ap-northeast-2"
 }
 
 variable "aws_profile_name" {
-    description = "AWS region"
-    type        = string
+  description = "AWS profile name"
+  type = string
+  default = "default"
 }
 
 variable "vpc" {

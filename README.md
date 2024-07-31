@@ -1,18 +1,21 @@
-# Permissionless Node Infra
+# Permissionless Node Infra Deploy
 
 ## Terraform
 * Fullfil your own profile and run in shell
 ```bash
 ENV="sepolia" #or mainnet
 useRDS="true"
-source vars/$ENV/source
+launchETH="true"
+pushd vars/$ENV;
+source source
+popd;
 ```
 
 * Initialize with s3 backend. Except 01.init
 ```bash
 terraform init \
   -backend-config "bucket=$s3_bucket" \
-  -backend-config "key=$ENV/network" \
+  -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name"
 ```
