@@ -50,3 +50,8 @@ resource "aws_subnet" "db" {
     Name = "db-${format("%02d", count.index + 1)}-${var.vpc.vpc_name}}"
   }
 }
+
+resource "aws_db_subnet_group" "this" {
+  name       = "${replace(aws_vpc.this.tags.Name,"_","-")}-db-subnet-group"
+  subnet_ids = aws_subnet.db[*].id
+}
