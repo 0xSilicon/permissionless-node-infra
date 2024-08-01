@@ -156,7 +156,7 @@ module "executor" {
   ami_id = local.ami_id
   name = "executor"
 
-  instance_type = "r6i.large"
+  instance_type = "r6i.xlarge"
 
   disable_api_termination = false
 

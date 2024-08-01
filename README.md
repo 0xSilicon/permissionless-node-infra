@@ -1,13 +1,13 @@
 # Permissionless Node Infra Deploy
 
 ## Terraform
-* Fullfil your own profile and run in shell
+* Make .env file in your target network directory. 
 ```bash
 ENV="sepolia" #or mainnet
 useRDS="true"
 launchETH="true"
 pushd vars/$ENV;
-source source
+source .env
 popd;
 ```
 

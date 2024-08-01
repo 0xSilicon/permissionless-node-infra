@@ -27,6 +27,11 @@ services:
     volumes:
       - ./node.config.toml:/app/config.toml
       - ./genesis.json:/app/genesis.json
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 500m
+        max-file: "3"
     command:
       - "/bin/sh"
       - "-c"
