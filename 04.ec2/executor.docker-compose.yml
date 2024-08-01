@@ -1,0 +1,21 @@
+networks:
+  default:
+    name: silicon
+
+services:
+  silicon-executor:
+    container_name: silicon-executor
+    image: hermeznetwork/zkevm-prover:v6.0.0
+    restart: unless-stopped
+    ports:
+      - 50061:50061
+      - 50071:50071
+    volumes:
+      - ./config.json:/usr/src/app/config.json
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 500m
+        max-file: "3"
+    command: >
+      zkProver -c /usr/src/app/config.json
