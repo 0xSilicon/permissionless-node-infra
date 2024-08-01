@@ -16,7 +16,7 @@ echo \
 apt update -y
 
 #Install the Docker packages
-apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin jq net-tools-y
+apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin jq net-tools -y
 apt autoremove -y
 
 while true; do

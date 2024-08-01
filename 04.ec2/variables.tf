@@ -30,13 +30,6 @@ variable "s3_tfstate_ec2_base" {
   type = string
 }
 
-variable "vpc" {
-  type = object({
-    vpc_name = string,
-    cidr_block = string,
-  })
-}
-
 variable "ami_id" {
   type = string
   default = ""
