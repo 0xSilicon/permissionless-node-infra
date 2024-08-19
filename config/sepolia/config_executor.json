@@ -3,7 +3,7 @@
     "runExecutorClient": false,
     "runExecutorClientMultithread": false,
 
-    "runHashDBServer": false,
+    "runHashDBServer": true,
     "runHashDBTest": false,
 
     "runAggregatorServer": false,
@@ -73,7 +73,7 @@
     "inputFile": "input_executor_0.json",
     "inputFile2": "input_executor_1.json",
 
-    "outputPath": "output",
+    "outputPath": "runtime/output",
     "configPath": "config",
 
     "zkevmCmPols_disabled": "runtime/zkevm.commit",
@@ -92,7 +92,7 @@
     "dbProgramTableName": "state.program",
     "dbMultiWrite": true,
     "dbConnectionsPool": true,
-    "dbNumberOfPoolConnections": 25,
+    "dbNumberOfPoolConnections": 41,
     "dbMetrics": false,
     "dbClearCache": false,
     "dbGetTree": false,
@@ -101,7 +101,7 @@
     "requestsPersistence": 3600,
     "maxExecutorThreads": 20,
     "maxProverThreads": 8,
-    "maxStateDBThreads": 8,
+    "maxStateDBThreads": 20,
 
     "fullTracerTraceReserveSize": 262144
 }
