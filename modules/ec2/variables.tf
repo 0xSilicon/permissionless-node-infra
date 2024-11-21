@@ -6,6 +6,7 @@ variable "subnet_id" { type = string }
 variable "user_data" { type = string }
 variable "disable_api_termination" { type = bool }
 variable "iam_role" { type = string }
+variable "is_public" { type = bool }
 
 variable "block_device_option" {
   type = object({

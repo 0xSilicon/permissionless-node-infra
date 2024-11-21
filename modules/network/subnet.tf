@@ -35,7 +35,7 @@ resource "aws_subnet" "private" {
 }
 
 resource "aws_subnet" "db" {
-  count = var.useRDS == true ? length(var.availability_zones) : 0
+  count = var.skipRDS == true ? 0 : length(var.availability_zones)
   vpc_id = aws_vpc.this.id
   cidr_block = cidrsubnet(
     aws_vpc.this.cidr_block,

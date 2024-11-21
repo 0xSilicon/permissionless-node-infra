@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 ENV="sepolia" #or mainnet
-useRDS="true"
-launchETH="true"
+skipRDS="false"
+skipNETWORK="false"
+launchL1="true"
 pushd vars/$ENV;
 source .env
 popd;
@@ -15,6 +16,7 @@ aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
 EOL
 terraform init;
+#terraform apply;
 terraform apply -auto-approve;
 popd;
 
@@ -23,15 +25,19 @@ pushd 02.network;
 cat <<EOL > terraform.tfvars
 aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
-vpc = $vpc
+skipRDS = $skipRDS
+skipNETWORK = $skipNETWORK
 availability_zones = $availability_zones
-useRDS = $useRDS
 EOL
+if [ ! -z "$vpc" ]; then
+  echo "vpc = $vpc" >> terraform.tfvars
+fi
 terraform init \
   -backend-config "bucket=$s3_bucket" \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
+#terraform apply;
 terraform apply -auto-approve;
 popd;
 
@@ -40,19 +46,23 @@ pushd 03.rds;
 cat <<EOL > terraform.tfvars
 aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
-useRDS = $useRDS
+skipRDS = $skipRDS
+skipNETWORK = $skipNETWORK
 s3_bucket = "$s3_bucket"
 s3_tfstate_network = "$s3_tfstate_network"
 rds_name = "$rds_name"
 master_username = "$master_username"
 master_password = "$master_password"
 EOL
+if [ ! -z "$network" ]; then
+  echo "network_object = $network" >> terraform.tfvars
+fi
 terraform init \
   -backend-config "bucket=$s3_bucket" \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply #-auto-approve; TODO: remove comment. still have bug for destroy and replace caused by availability zone
+terraform apply -auto-approve;
 popd;
 
 # ec2
@@ -68,6 +78,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
+#terraform apply;
 terraform apply -auto-approve;
 popd;
 ## db init script
@@ -75,18 +86,23 @@ pushd 02.ec2_db;
 cat <<EOL > terraform.tfvars
 aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
-useRDS = $useRDS
+skipRDS = $skipRDS
+skipNETWORK = $skipNETWORK
 s3_bucket = "$s3_bucket"
 s3_tfstate_network = "$s3_tfstate_network"
 s3_tfstate_rds = "$s3_tfstate_rds"
 s3_tfstate_ec2_base = "$s3_tfstate_ec2_base"
 master_password = "$master_password"
 EOL
+if [ ! -z "$network" ]; then
+  echo "network_object = $network" >> terraform.tfvars
+fi
 terraform init \
   -backend-config "bucket=$s3_bucket" \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
+#terraform apply;
 terraform apply -auto-approve;
 popd;
 ## launch rpc / executor
@@ -94,18 +110,30 @@ cat <<EOL > terraform.tfvars
 aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
 
-useRDS = $useRDS
 s3_bucket = "$s3_bucket"
 s3_tfstate_network = "$s3_tfstate_network"
 s3_tfstate_rds = "$s3_tfstate_rds"
 s3_tfstate_ec2_base = "$s3_tfstate_ec2_base"
 
+launchL1 = $launchL1
+skipRDS = $skipRDS
+skipNETWORK = $skipNETWORK
+
 master_password = "$master_password"
+
+instances_type = $instances_type
 EOL
+if [ ! -z "$network" ]; then
+  echo "network_object = $network" >> terraform.tfvars
+fi
+if [[ "$launchL1" == "true" ]]; then
+  echo "nameOfL1 = \"$ENV\"" >> terraform.tfvars
+fi
 terraform init \
   -backend-config "bucket=$s3_bucket" \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply -auto-approve;
+terraform apply;
+#terraform apply -auto-approve;
 popd;

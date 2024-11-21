@@ -16,4 +16,4 @@ variable "subnets" {
   })
 }
 
-variable "useRDS" { type = bool }
+variable "skipRDS" { type = bool }

@@ -10,11 +10,20 @@ variable "aws_profile_name" {
   default = "default"
 }
 
+variable "skipNETWORK" {
+  type = bool
+  default = false
+}
+
 variable "vpc" {
   type = object({
     vpc_name = string,
     cidr_block = string,
   })
+  default = {
+    vpc_name = ""
+    cidr_block = ""
+  }
 }
 
 variable "availability_zones" {
@@ -36,7 +45,7 @@ variable "subnets" {
   }
 }
 
-variable "useRDS" {
+variable "skipRDS" {
   type = bool
   default = false
 }

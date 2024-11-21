@@ -35,16 +35,59 @@ variable "ami_id" {
   default = ""
 }
 
-variable "useRDS" {
+variable "skipRDS" {
+  type = bool
+  default = false
+}
+
+variable "skipNETWORK" {
+  type = bool
+  default = false
+}
+
+variable "network_object" {
+  type = object({
+    vpc_id = string
+    public_subnet_id = string
+  })
+  default = {
+    vpc_id = ""
+    public_subnet_id = ""
+  }
+}
+
+variable "launchL1" {
   type = bool
   default = true
 }
 
-variable "launchETH" {
-  type = bool
-  default = true
+variable "nameOfL1" {
+  type = string
+  default = ""
+
+  validation {
+    condition = var.launchL1 == false || var.nameOfL1 == "sepolia" || var.nameOfL1 == "mainnet"
+    error_message = "launchL1 variable is true. then nameOfL1 must be sepolia or mainnet."
+  }
 }
 
 variable "master_password" {
   type = string
+}
+
+variable "instances_type" {
+  type = object({
+    rpc = object({
+      type = string
+      arch = string
+    })
+    executor = object({
+      type = string
+      arch = string
+    })
+    l1 = optional(object({
+      type = string
+      arch = string
+    }))
+  })
 }
