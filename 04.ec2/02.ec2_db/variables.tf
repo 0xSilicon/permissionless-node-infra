@@ -30,9 +30,25 @@ variable "s3_tfstate_ec2_base" {
   type = string
 }
 
-variable "useRDS" {
+variable "skipRDS" {
   type = bool
-  default = true
+  default = false
+}
+
+variable "skipNETWORK" {
+  type = bool
+  default = false
+}
+
+variable "network_object" {
+  type = object({
+    vpc_id = string
+    public_subnet_id = string
+  })
+  default = {
+    vpc_id = ""
+    public_subnet_id = ""
+  }
 }
 
 variable "master_password" {

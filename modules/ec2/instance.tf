@@ -7,6 +7,7 @@ resource "aws_instance" "this" {
   user_data               = var.user_data
   disable_api_termination = var.disable_api_termination
   iam_instance_profile    = var.iam_role
+  associate_public_ip_address = var.is_public
 
   root_block_device {
     volume_size           = var.block_device_option.size_gib

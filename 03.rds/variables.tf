@@ -20,9 +20,29 @@ variable "s3_tfstate_network" {
   type = string
 }
 
-variable "useRDS" {
+variable "skipNETWORK" {
   type = bool
-  default = true
+  default = false
+}
+
+variable "network_object" {
+  type = object({
+    vpc_id = string
+    cidr_block = string
+    availability_zones = list(string)
+    db_subnet_group_name = string
+  })
+  default = {
+    vpc_id = ""
+    cidr_block = ""
+    availability_zones = [ ]
+    db_subnet_group_name = ""
+  }
+}
+
+variable "skipRDS" {
+  type = bool
+  default = false
 }
 
 variable "rds_name" {

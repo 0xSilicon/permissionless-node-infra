@@ -1,0 +1,21 @@
+[Unit]
+Description=Prysm Beacon Chain
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+# optional, specify a specific version
+#Environment=USE_PRYSM_VERSION=v1.0.0-alpha.7
+ExecStart=/home/ssm-user/beacon/prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --jwt-secret=/home/ssm-user/jwt.hex --datadir=/home/ssm-user/beacon --checkpoint-sync-url=https://sepolia.beaconstate.info --genesis-beacon-api-url=https://sepolia.beaconstate.info
+
+Restart=on-failure
+RestartSec=10
+User=ssm-user
+
+LimitNOFILE = infinity
+LimitNPROC = infinity
+LimitMEMLOCK = infinity
+
+[Install]
+WantedBy=multi-user.target

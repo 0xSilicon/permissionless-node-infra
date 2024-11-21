@@ -23,11 +23,5 @@ chown -R ssm-user:ssm-user /home/ssm-user/beacon
 /home/ssm-user/beacon/prysm.sh beacon-chain generate-auth-secret --output-file /home/ssm-user/jwt.hex
 chmod a+r /home/ssm-user/jwt.hex
 
-wget https://gist.githubusercontent.com/jaybbbb/2d91db691b754378e934e57453e9aa69/raw/prysm.service -O /lib/systemd/system/prysm.service
-systemctl enable prysm.service; systemctl restart prysm.service
-
 mkdir -p /home/ssm-user/execution
 chown -R ssm-user:ssm-user /home/ssm-user/execution
-
-wget https://gist.githubusercontent.com/jaybbbb/2d91db691b754378e934e57453e9aa69/raw/geth.service -O /lib/systemd/system/geth.service
-systemctl enable geth.service; systemctl restart geth.service
