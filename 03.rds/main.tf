@@ -10,7 +10,7 @@ data "terraform_remote_state" "network" {
 
 module "rds_role" {
   source = "../modules/iam/rds"
-  name = "rds-role"
+  name = "rds-${var.nameOfL1}-role"
 }
 
 module "silicon_cluster" {
@@ -43,12 +43,10 @@ module "silicon_cluster" {
     var.network_object.cidr_block :
     data.terraform_remote_state.network.outputs.vpc_info.cidr_block[0]
   )
-  # NOTE: If Terraform attempts to destroy and replace a cluster due to editing the availability zones, uncomment the lines and edit the availability zones.
   availability_zones = ( var.skipNETWORK == true ?
     var.network_object.availability_zones :
     data.terraform_remote_state.network.outputs.availability_zones
   )
-  # availability_zones = concat(data.terraform_remote_state.network.outputs.availability_zones, ["ap-northeast-2d"])
   db_subnet_group_name = ( var.skipNETWORK == true ?
     var.network_object.db_subnet_group_name :
     data.terraform_remote_state.network.outputs.db_subnet_group_info.name[0]

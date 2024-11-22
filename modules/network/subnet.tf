@@ -12,7 +12,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "public-${format("%02d", count.index + 1)}-${var.vpc.vpc_name}}"
+    Name = "public-${format("%02d", count.index + 1)}-${var.vpc.vpc_name}"
   }
   depends_on = [ aws_vpc.this ]
 }
@@ -30,7 +30,7 @@ resource "aws_subnet" "private" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "private-${format("%02d", count.index + 1)}-${var.vpc.vpc_name}}"
+    Name = "private-${format("%02d", count.index + 1)}-${var.vpc.vpc_name}"
   }
 }
 
@@ -47,7 +47,7 @@ resource "aws_subnet" "db" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name = "db-${format("%02d", count.index + 1)}-${var.vpc.vpc_name}}"
+    Name = "db-${format("%02d", count.index + 1)}-${var.vpc.vpc_name}"
   }
 }
 

@@ -16,8 +16,8 @@ aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
 EOL
 terraform init;
-#terraform apply;
-terraform apply -auto-approve;
+terraform apply;
+#terraform apply -auto-approve;
 popd;
 
 # network
@@ -37,8 +37,8 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-#terraform apply;
-terraform apply -auto-approve;
+terraform apply;
+#terraform apply -auto-approve;
 popd;
 
 # rds
@@ -46,6 +46,7 @@ pushd 03.rds;
 cat <<EOL > terraform.tfvars
 aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
+nameOfL1 = "$ENV"
 skipRDS = $skipRDS
 skipNETWORK = $skipNETWORK
 s3_bucket = "$s3_bucket"
@@ -62,7 +63,8 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply -auto-approve;
+terraform apply
+#terraform apply -auto-approve;
 popd;
 
 # ec2
@@ -72,14 +74,15 @@ pushd 01.ec2_base;
 cat <<EOL > terraform.tfvars
 aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
+nameOfL1 = "$ENV"
 EOL
 terraform init \
   -backend-config "bucket=$s3_bucket" \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-#terraform apply;
-terraform apply -auto-approve;
+terraform apply;
+#terraform apply -auto-approve;
 popd;
 ## db init script
 pushd 02.ec2_db;
@@ -102,13 +105,14 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-#terraform apply;
-terraform apply -auto-approve;
+terraform apply;
+#terraform apply -auto-approve;
 popd;
 ## launch rpc / executor
 cat <<EOL > terraform.tfvars
 aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
+nameOfL1 = "$ENV"
 
 s3_bucket = "$s3_bucket"
 s3_tfstate_network = "$s3_tfstate_network"
@@ -116,6 +120,7 @@ s3_tfstate_rds = "$s3_tfstate_rds"
 s3_tfstate_ec2_base = "$s3_tfstate_ec2_base"
 
 launchL1 = $launchL1
+urlOfL1 = "$urlOfL1"
 skipRDS = $skipRDS
 skipNETWORK = $skipNETWORK
 
@@ -126,14 +131,11 @@ EOL
 if [ ! -z "$network" ]; then
   echo "network_object = $network" >> terraform.tfvars
 fi
-if [[ "$launchL1" == "true" ]]; then
-  echo "nameOfL1 = \"$ENV\"" >> terraform.tfvars
-fi
 terraform init \
   -backend-config "bucket=$s3_bucket" \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply;
+terraform apply
 #terraform apply -auto-approve;
 popd;

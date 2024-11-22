@@ -71,6 +71,11 @@ variable "nameOfL1" {
   }
 }
 
+variable "urlOfL1" {
+  type = string
+  default = ""
+}
+
 variable "master_password" {
   type = string
 }
