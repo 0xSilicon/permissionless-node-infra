@@ -10,6 +10,10 @@ variable "aws_profile_name" {
   default = "default"
 }
 
+variable "nameOfL1" {
+  type = string
+}
+
 terraform {
   backend "s3" {
     encrypt = true
@@ -42,7 +46,7 @@ output "ami_data" {
 
 module "ssm" {
   source = "../../modules/iam/ssm"
-  name = "instance_role"
+  name = "instance-${var.nameOfL1}-role"
 }
 
 output "ssm_info" {

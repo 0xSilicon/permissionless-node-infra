@@ -31,6 +31,7 @@ data "terraform_remote_state" "ec2_base" {
 locals {
   ami_id = substr(var.ami_id, 0, 4) == "ami-" ? var.ami_id : data.terraform_remote_state.ec2_base.outputs.ami_data.ubuntu
   ami_arm_id = data.terraform_remote_state.ec2_base.outputs.ami_data.ubuntu_arm64
+  ethermanurl = var.launchL1 == true ? "http:\\/\\/${module.l1_rpc[0].ec2_instance_info.private_ip}:8545" : replace(var.urlOfL1, "/", "\\/")
 }
 
 module "public_rpc_sg" {
@@ -109,7 +110,7 @@ module "l1_rpc" {
   iam_role = data.terraform_remote_state.ec2_base.outputs.ssm_info.instance_profile_name
 
   block_device_option = {
-    size_gib = 512
+    size_gib = var.nameOfL1 == "mainnet" ? 2048 : 512
     delete_on_termination = true
   }
 
@@ -157,12 +158,12 @@ module "public_rpc" {
     sed -i 's/statedb/state_db/' docker-compose.yml
     sed -i 's/pooldb/pool_db/' docker-compose.yml
     sed -i 's/dbhost/${data.terraform_remote_state.rds.outputs.silicon_cluster_info.endpoint[0]}/' docker-compose.yml
-    sed -i 's/ethermanurl/http:\/\/${module.l1_rpc[0].ec2_instance_info.private_ip}:8545/' docker-compose.yml
+    sed -i 's/ethermanurl/${local.ethermanurl}/' docker-compose.yml
     sed -i 's/mtclienturi/${module.executor[0].ec2_instance_info.private_ip}:50061/' docker-compose.yml
     sed -i 's/executoruri/${module.executor[0].ec2_instance_info.private_ip}:50071/' docker-compose.yml
 
-    wget https://raw.githubusercontent.com/0xSilicon/permissionless-node-infra/refs/heads/main/config/sepolia/genesis.json
-    wget https://raw.githubusercontent.com/0xSilicon/permissionless-node-infra/refs/heads/main/config/sepolia/node.toml
+    wget https://raw.githubusercontent.com/0xSilicon/permissionless-node-infra/refs/heads/main/config/${var.nameOfL1}/genesis.json
+    wget https://raw.githubusercontent.com/0xSilicon/permissionless-node-infra/refs/heads/main/config/${var.nameOfL1}/node.toml
     mv docker-compose.yml /home/ssm-user/docker-compose.yml
     mv node.toml /home/ssm-user/node.toml
     mv genesis.json /home/ssm-user/genesis.json

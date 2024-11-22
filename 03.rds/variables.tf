@@ -40,6 +40,10 @@ variable "network_object" {
   }
 }
 
+variable "nameOfL1" {
+  type = string
+}
+
 variable "skipRDS" {
   type = bool
   default = false
