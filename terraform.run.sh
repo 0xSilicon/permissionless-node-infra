@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-ENV="sepolia" #or mainnet
-skipRDS="false"
-skipNETWORK="false"
-launchL1="true"
 pushd vars/$ENV;
 source .env
 popd;
@@ -16,8 +12,7 @@ aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
 EOL
 terraform init;
-terraform apply;
-#terraform apply -auto-approve;
+terraform apply -auto-approve;
 popd;
 
 # network
@@ -37,8 +32,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply;
-#terraform apply -auto-approve;
+terraform apply -auto-approve;
 popd;
 
 # rds
@@ -63,8 +57,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply
-#terraform apply -auto-approve;
+terraform apply -auto-approve;
 popd;
 
 # ec2
@@ -81,8 +74,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply;
-#terraform apply -auto-approve;
+terraform apply -auto-approve;
 popd;
 ## db init script
 pushd 02.ec2_db;
@@ -105,8 +97,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply;
-#terraform apply -auto-approve;
+terraform apply -auto-approve;
 popd;
 ## launch rpc / executor
 cat <<EOL > terraform.tfvars
@@ -136,6 +127,5 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply
-#terraform apply -auto-approve;
+terraform apply -auto-approve;
 popd;
