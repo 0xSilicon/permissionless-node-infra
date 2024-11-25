@@ -2,15 +2,15 @@
 
 ## Terraform
 * Make .env file in your target network directory.
+
+### Quick Start
+
 ```bash
-ENV="sepolia" #or mainnet
-skipRDS="true"
-launchL1="true"
-pushd vars/$ENV;
-source .env
-popd;
+#mainnet/sepolia
+ENV="mainnet" ./terraform.run.sh
 ```
 
+### WIP...
 * Initialize with s3 backend. Except 01.init
 ```bash
 terraform init \

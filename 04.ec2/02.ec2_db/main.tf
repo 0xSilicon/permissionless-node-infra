@@ -66,19 +66,11 @@ module "init_rds" {
     apt install postgresql -y
     apt autoremove -y
 
-    while true; do
-      id -u ssm-user
-      if [ $? -eq 0 ]; then
-        break
-      fi
-      sleep 1s
-    done
-
-    wget https://gist.githubusercontent.com/jaybbbb/f84c06eaec263731bc468b24cb5a212d/raw/single_db_server.sql -O /home/ssm-user/single_db_server.sql
+    wget https://gist.githubusercontent.com/jaybbbb/f84c06eaec263731bc468b24cb5a212d/raw/single_db_server.sql
     export PGPASSWORD="${var.master_password}"
     psql -h ${data.terraform_remote_state.rds.outputs.silicon_cluster_info.endpoint[0]} \
       -U ${data.terraform_remote_state.rds.outputs.silicon_cluster_info.master_username[0]} \
-      -d state_db -a -f /home/ssm-user/single_db_server.sql
+      -d state_db -a -f single_db_server.sql
   EOF
 
   depends_on = [ module.init_rds_sg ]
