@@ -96,3 +96,26 @@ variable "instances_type" {
     }))
   })
 }
+
+// terraform apply -auto-approve -var="rpc_instance_count=2" -var="executor_instance_count=2"
+variable "rpc_instance_count" {
+  description = "value of public_rpc instance count"
+  type = number
+  default = 1
+
+  validation {
+    condition     = var.rpc_instance_count >= 1
+    error_message = "rpc_instance_count must be at least 1."
+  }
+}
+
+variable "executor_instance_count" {
+  description = "value of executor instance count"
+  type = number
+  default = 1
+
+  validation {
+    condition     = var.executor_instance_count >= 1
+    error_message = "executor_instance_count must be at least 1."
+  }
+}
