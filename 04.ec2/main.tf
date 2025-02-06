@@ -130,7 +130,7 @@ module "l1_rpc" {
 }
 
 module "public_rpc" {
-  count = 1
+  count = max(var.rpc_instance_count, 1)
   source = "../modules/ec2"
 
   ami_id = var.instances_type.rpc.arch == "arm" == true ? local.ami_arm_id : local.ami_id
@@ -175,7 +175,7 @@ module "public_rpc" {
 }
 
 module "executor" {
-  count = 1
+  count = max(var.executor_instance_count, 1)
   source = "../modules/ec2"
 
   ami_id = var.instances_type.executor.arch == "arm" == true ? local.ami_arm_id : local.ami_id
