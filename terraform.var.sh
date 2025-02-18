@@ -12,7 +12,7 @@ aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
 EOL
 terraform init;
-terraform apply -auto-approve;
+terraform plan;
 popd;
 
 # network
@@ -32,7 +32,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply -auto-approve;
+terraform plan;
 popd;
 
 # rds
@@ -57,7 +57,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply -auto-approve;
+terraform plan;
 popd;
 
 # ec2
@@ -74,7 +74,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply -auto-approve;
+terraform plan;
 popd;
 ## db init script
 pushd 02.ec2_db;
@@ -97,7 +97,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply -auto-approve;
+terraform plan;
 popd;
 
 ## ec2 lb init script
@@ -135,6 +135,7 @@ s3_bucket = "$s3_bucket"
 s3_tfstate_network = "$s3_tfstate_network"
 s3_tfstate_rds = "$s3_tfstate_rds"
 s3_tfstate_ec2_base = "$s3_tfstate_ec2_base"
+s3_tfstate_ec2_lb = "$s3_tfstate_ec2_lb"
 
 launchL1 = $launchL1
 urlOfL1 = "$urlOfL1"
@@ -144,6 +145,11 @@ skipNETWORK = $skipNETWORK
 master_password = "$master_password"
 
 instances_type = $instances_type
+
+skipLB = $skipLB
+lb_name = "$lb_name"
+lb_target_group_name = "$lb_target_group_name"
+
 EOL
 if [ ! -z "$network" ]; then
   echo "network_object = $network" >> terraform.tfvars
@@ -153,5 +159,5 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply -auto-approve;
+terraform plan;
 popd;
