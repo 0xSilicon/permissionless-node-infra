@@ -37,6 +37,13 @@ MultiGasProvider = false
 	[Etherman.Etherscan]
 		ApiKey = ""
 
+[L2GasPriceSuggester]
+Type = "follower"
+UpdatePeriod = "10s"
+Factor = 0.004
+DefaultGasPriceWei = 3500000
+MaxGasPriceWei = 0
+
 [RPC]
 Host = "0.0.0.0"
 Port = 8545

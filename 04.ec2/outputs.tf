@@ -17,3 +17,13 @@ output "public_rpc_instance_info" {
   }
   description = ""
 }
+
+output "expanded_rpc_instance_info" {
+  value = {
+    name = module.expanded_rpc[*].ec2_instance_info.name
+    id = module.expanded_rpc[*].ec2_instance_info.id
+    private_ip = module.expanded_rpc[*].ec2_instance_info.private_ip
+    public_ip = module.expanded_rpc[*].ec2_instance_info.public_ip
+  }
+  description = ""
+}

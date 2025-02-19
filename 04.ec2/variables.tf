@@ -30,6 +30,12 @@ variable "s3_tfstate_ec2_base" {
   type = string
 }
 
+variable "s3_tfstate_ec2_lb" {
+  description = "S3 bucket key for load balancer state file"
+  type = string
+}
+
+
 variable "ami_id" {
   type = string
   default = ""
@@ -54,6 +60,16 @@ variable "network_object" {
     vpc_id = ""
     public_subnet_id = ""
   }
+}
+
+variable "skipLB" {
+  type = bool
+  default = false
+}
+
+variable "lb_target_group_name" {
+  description = "The name of the target group"
+  type        = string
 }
 
 variable "launchL1" {
@@ -97,16 +113,11 @@ variable "instances_type" {
   })
 }
 
-// terraform apply -auto-approve -var="rpc_instance_count=2" -var="executor_instance_count=2"
-variable "rpc_instance_count" {
-  description = "value of public_rpc instance count"
+// terraform apply -auto-approve -var="expanded_rpc_instance_count=1" -var="executor_instance_count=2"
+variable "expanded_rpc_instance_count" {
+  description = "value of expanded_rpc instance count"
   type = number
-  default = 1
-
-  validation {
-    condition     = var.rpc_instance_count >= 1
-    error_message = "rpc_instance_count must be at least 1."
-  }
+  default = 0
 }
 
 variable "executor_instance_count" {
