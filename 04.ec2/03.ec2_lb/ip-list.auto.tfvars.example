@@ -1,0 +1,6 @@
+allowed_ips = [
+  {
+    "cidr_ip"     = "allowed_ip"
+    "description" = "description"
+  },
+]

@@ -30,9 +30,29 @@ variable "s3_tfstate_ec2_base" {
   type = string
 }
 
+variable "s3_tfstate_ec2_lb" {
+  description = "S3 bucket key for load balancer state file"
+  type = string
+}
+
 variable "skipNETWORK" {
   type = bool
   default = false
+}
+
+variable "lb_name" {
+  description = "The name of the load balancer"
+  type        = string
+}
+
+variable "lb_target_group_name" {
+  description = "The name of the target group"
+  type        = string
+}
+
+variable "lb_security_group_name" {
+  description = "The name of the security group for the load balancer"
+  type        = string
 }
 
 variable "domain_name" {
@@ -49,4 +69,13 @@ variable "network_object" {
     vpc_id = ""
     public_subnet_id = ""
   }
+}
+
+variable "allowed_ips" {
+  description = "List of IPs allowed to access the Load Balancer"
+  type        = list(object({
+    cidr_ip     = string
+    description = string
+  }))
+  default = []
 }

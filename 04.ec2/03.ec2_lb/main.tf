@@ -16,7 +16,7 @@ data "aws_acm_certificate" "silicon_cert" {
 # Load Balancer 생성
 resource "aws_lb" "silicon_lb" {
   count              = 1
-  name               = "silicon-load-balancer"
+  name               = var.lb_name
   internal           = false
   load_balancer_type = "application"
   security_groups    = [module.load_balancer_sg.security_group_info.id]
@@ -28,7 +28,7 @@ resource "aws_lb" "silicon_lb" {
 # Target Group 생성
 resource "aws_lb_target_group" "silicon_rpc_tg" {
   count    = 1
-  name     = "silicon-rpc-tg"
+  name     = var.lb_target_group_name
   port     = 443
   protocol = "HTTPS"
   vpc_id = (var.skipNETWORK == true ?
@@ -47,19 +47,32 @@ resource "aws_lb_target_group" "silicon_rpc_tg" {
 module "load_balancer_sg" {
   source = "../../modules/ec2/securitygroup"
 
-  name = "load-balancer-sg"
+  name = var.lb_security_group_name
   vpc_id = ( var.skipNETWORK == true ?
     var.network_object.vpc_id :
     data.terraform_remote_state.network.outputs.vpc_info.vpc_id[0]
   )
 
   # Ingress rules are customized based on requirements
-  ingress = [{
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }]
+  ingress = (
+    fileexists("${path.module}/ip-list.auto.tfvars") && length(var.allowed_ips) > 0 ?
+    [
+      for ip in var.allowed_ips : {
+        description = ip.description
+        from_port   = 443
+        to_port     = 443
+        protocol    = "tcp"
+        cidr_blocks = [ip.cidr_ip]
+      }
+    ] :
+    [{
+      description = "Default HTTPS access"
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }]
+  )
 
   egress = [{
     from_port   = 0

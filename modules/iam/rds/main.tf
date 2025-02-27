@@ -18,10 +18,9 @@ resource "aws_iam_role" "this" {
     })
 }
 
-resource "aws_iam_policy_attachment" "this" {
-    name       = "${aws_iam_role.this.name}_rds_policy_attachment"
+resource "aws_iam_role_policy_attachment" "this" {
     policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-    roles      = [aws_iam_role.this.name]
+    role      = aws_iam_role.this.name
 }
 
 output "rds_role_info" {

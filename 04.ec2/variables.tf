@@ -67,6 +67,11 @@ variable "skipLB" {
   default = false
 }
 
+variable "lb_name" {
+  description = "The name of the load balancer"
+  type        = string
+}
+
 variable "lb_target_group_name" {
   description = "The name of the target group"
   type        = string

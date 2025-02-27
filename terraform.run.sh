@@ -110,8 +110,13 @@ s3_bucket = "$s3_bucket"
 s3_tfstate_network = "$s3_tfstate_network"
 s3_tfstate_rds = "$s3_tfstate_rds"
 s3_tfstate_ec2_base = "$s3_tfstate_ec2_base"
+s3_tfstate_ec2_lb = "$s3_tfstate_ec2_lb"
 
 skipNETWORK = $skipNETWORK
+lb_name = "$lb_name"
+lb_target_group_name = "$lb_target_group_name"
+lb_security_group_name = "$lb_security_group_name"
+
 domain_name = "$domain_name"
 EOL
 if [ ! -z "$network" ]; then
@@ -135,6 +140,7 @@ s3_bucket = "$s3_bucket"
 s3_tfstate_network = "$s3_tfstate_network"
 s3_tfstate_rds = "$s3_tfstate_rds"
 s3_tfstate_ec2_base = "$s3_tfstate_ec2_base"
+s3_tfstate_ec2_lb = "$s3_tfstate_ec2_lb"
 
 launchL1 = $launchL1
 urlOfL1 = "$urlOfL1"
@@ -144,6 +150,10 @@ skipNETWORK = $skipNETWORK
 master_password = "$master_password"
 
 instances_type = $instances_type
+
+skipLB = $skipLB
+lb_name = "$lb_name"
+lb_target_group_name = "$lb_target_group_name"
 EOL
 if [ ! -z "$network" ]; then
   echo "network_object = $network" >> terraform.tfvars

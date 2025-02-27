@@ -269,7 +269,7 @@ module "executor" {
   depends_on = [ module.executor_sg ]
 }
 
-data "aws_lb_target_group" "tg" {
+data "aws_lb_target_group" "silicon_rpc_tg" {
   name = var.lb_target_group_name
 }
 
@@ -277,7 +277,7 @@ data "aws_lb_target_group" "tg" {
 resource "aws_lb_target_group_attachment" "attach_public_rpc" {
   count            = 1
   target_group_arn = (var.skipLB == true ?
-    data.aws_lb_target_group.tg.arn :
+    data.aws_lb_target_group.silicon_rpc_tg.arn :
     data.terraform_remote_state.load_balancer.outputs.tg_info.tg_arn)
   target_id        = module.public_rpc[0].ec2_instance_info.id
 }
@@ -285,7 +285,7 @@ resource "aws_lb_target_group_attachment" "attach_public_rpc" {
 resource "aws_lb_target_group_attachment" "attach_expanded_rpc" {
   count            = var.expanded_rpc_instance_count
   target_group_arn = (var.skipLB == true ?
-    data.aws_lb_target_group.tg.arn :
+    data.aws_lb_target_group.silicon_rpc_tg.arn :
     data.terraform_remote_state.load_balancer.outputs.tg_info.tg_arn)
   target_id        = module.expanded_rpc[count.index].ec2_instance_info.id
 }
