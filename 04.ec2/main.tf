@@ -144,7 +144,7 @@ module "public_rpc" {
   source = "../modules/ec2"
 
   ami_id = var.instances_type.rpc.arch == "arm" == true ? local.ami_arm_id : local.ami_id
-  name = "public-rpc"
+  name = "public-rpc-02"
   instance_type = var.instances_type.rpc.type
 
   is_public = true
@@ -234,7 +234,7 @@ module "executor" {
   source = "../modules/ec2"
 
   ami_id = var.instances_type.executor.arch == "arm" == true ? local.ami_arm_id : local.ami_id
-  name = "executor"
+  name = "executor-02"
 
   instance_type = var.instances_type.executor.type
 
