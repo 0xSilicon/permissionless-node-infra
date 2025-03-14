@@ -10,11 +10,11 @@ data "terraform_remote_state" "network" {
 
 module "rds_role" {
   source = "../modules/iam/rds"
-  name = "rds-role"
+  name = "rds-${var.nameOfL1}-role"
 }
 
 module "silicon_cluster" {
-  count = var.useRDS == true ? 1 : 0
+  count = var.skipRDS == true ? 0 : 1
   source = "../modules/rds/cluster"
 
   name = var.rds_name
@@ -35,12 +35,22 @@ module "silicon_cluster" {
 
   pg_family = "aurora-postgresql15"
 
-  vpc_id = data.terraform_remote_state.network.outputs.vpc_info.vpc_id
-  vpc_cidr = data.terraform_remote_state.network.outputs.vpc_info.cidr_block
-  # NOTE: If Terraform attempts to destroy and replace a cluster due to editing the availability zones, uncomment the lines and edit the availability zones.
-  availability_zones = data.terraform_remote_state.network.outputs.availability_zones
-  # availability_zones = concat(data.terraform_remote_state.network.outputs.availability_zones, ["ap-northeast-2d"])
-  db_subnet_group_name = data.terraform_remote_state.network.outputs.db_subnet_group_info.name
+  vpc_id = ( var.skipNETWORK == true ?
+    var.network_object.vpc_id :
+    data.terraform_remote_state.network.outputs.vpc_info.vpc_id[0]
+  )
+  vpc_cidr = ( var.skipNETWORK == true ?
+    var.network_object.cidr_block :
+    data.terraform_remote_state.network.outputs.vpc_info.cidr_block[0]
+  )
+  availability_zones = ( var.skipNETWORK == true ?
+    var.network_object.availability_zones :
+    data.terraform_remote_state.network.outputs.availability_zones
+  )
+  db_subnet_group_name = ( var.skipNETWORK == true ?
+    var.network_object.db_subnet_group_name :
+    data.terraform_remote_state.network.outputs.db_subnet_group_info.name[0]
+  )
 
   iam_role_info = module.rds_role.rds_role_info
 

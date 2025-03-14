@@ -15,40 +15,23 @@ variable "s3_bucket" {
   type = string
 }
 
-variable "s3_tfstate_network" {
-  description = "S3 bucket key for network state file"
-  type = string
-}
-
 variable "s3_tfstate_rds" {
   description = "S3 bucket key for rds state file"
   type = string
 }
 
-variable "s3_tfstate_ec2_base" {
-  description = "S3 bucket key for ami state file"
+variable "s3_tfstate_ec2" {
+  description = "S3 bucket key for ec2 file"
   type = string
 }
 
-variable "skipRDS" {
-  type = bool
-  default = false
+variable "s3_tfstate_ec2_db" {
+  description = "S3 bucket key for init rds ec2 file"
+  type = string
 }
 
-variable "skipNETWORK" {
-  type = bool
-  default = false
-}
-
-variable "network_object" {
-  type = object({
-    vpc_id = string
-    public_subnet_id = string
-  })
-  default = {
-    vpc_id = ""
-    public_subnet_id = ""
-  }
+variable "backup_date" {
+  type = string
 }
 
 variable "master_password" {

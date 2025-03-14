@@ -21,12 +21,6 @@ MinAllowedGasPriceInterval = "5m"
 PollMinAllowedGasPriceInterval = "15s"
 AccountQueue = 64
 GlobalQueue = 1024
-	[Pool.EffectiveGasPrice]
-	Enabled = true
-	L1GasPriceFactor = 0.25
-	ByteGasCost = 16
-	ZeroByteGasCost = 4
-	NetProfit = 1
 	[Pool.DB]
 	User = "pool_user"
 	Password = "pool_password"
@@ -46,8 +40,8 @@ MultiGasProvider = false
 [L2GasPriceSuggester]
 Type = "follower"
 UpdatePeriod = "10s"
-Factor = 0.35
-DefaultGasPriceWei = 1000000000
+Factor = 0.004
+DefaultGasPriceWei = 3500000
 MaxGasPriceWei = 0
 
 [RPC]

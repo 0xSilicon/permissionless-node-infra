@@ -27,7 +27,7 @@ resource "aws_iam_role_policy_attachment" "ssm_policy" {
 }
 
 resource "aws_iam_instance_profile" "this" {
-  name = "${aws_iam_role.this.name}_profile"
+  name = "${aws_iam_role.this.name}-profile"
   role = aws_iam_role.this.name
 }
 

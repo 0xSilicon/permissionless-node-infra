@@ -2,7 +2,7 @@
 cat <<EOL > terraform.tfvars
 aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
-useRDS = $useRDS
+skipRDS = $skipRDS
 s3_bucket = "$s3_bucket"
 s3_tfstate_network = "$s3_tfstate_network"
 rds_name = "$rds_name"

@@ -26,18 +26,38 @@ variable "s3_tfstate_rds" {
 }
 
 variable "s3_tfstate_ec2_base" {
-  description = "S3 bucket key for ami state file"
+  description = "S3 bucket key for network state file"
   type = string
 }
 
-variable "skipRDS" {
-  type = bool
-  default = false
+variable "s3_tfstate_ec2_lb" {
+  description = "S3 bucket key for load balancer state file"
+  type = string
 }
 
 variable "skipNETWORK" {
   type = bool
   default = false
+}
+
+variable "lb_name" {
+  description = "The name of the load balancer"
+  type        = string
+}
+
+variable "lb_target_group_name" {
+  description = "The name of the target group"
+  type        = string
+}
+
+variable "lb_security_group_name" {
+  description = "The name of the security group for the load balancer"
+  type        = string
+}
+
+variable "domain_name" {
+  type = string
+  default = ""
 }
 
 variable "network_object" {
@@ -51,6 +71,11 @@ variable "network_object" {
   }
 }
 
-variable "master_password" {
-  type = string
+variable "allowed_ips" {
+  description = "List of IPs allowed to access the Load Balancer"
+  type        = list(object({
+    cidr_ip     = string
+    description = string
+  }))
+  default = []
 }

@@ -12,7 +12,7 @@ aws_region = "$aws_region"
 aws_profile_name = "$aws_profile_name"
 EOL
 terraform init;
-terraform apply -auto-approve;
+terraform plan;
 popd;
 
 # network
@@ -32,7 +32,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply -auto-approve;
+terraform plan;
 popd;
 
 # rds
@@ -57,7 +57,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply -auto-approve;
+terraform plan;
 popd;
 
 # ec2
@@ -74,7 +74,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply -auto-approve;
+terraform plan;
 popd;
 ## db init script
 pushd 02.ec2_db;
@@ -97,7 +97,7 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply -auto-approve;
+terraform plan;
 popd;
 
 ## ec2 lb init script
@@ -163,5 +163,5 @@ terraform init \
   -backend-config "key=$ENV/$(basename $PWD | awk -F '.' '{print $2}').tfstate" \
   -backend-config "region=$aws_region" \
   -backend-config "profile=$aws_profile_name";
-terraform apply -auto-approve;
+terraform plan;
 popd;
