@@ -30,8 +30,19 @@ variable "s3_tfstate_ec2_db" {
   type = string
 }
 
+# terraform apply -var="restore_enabled=true"
+variable "restore_enabled" {
+  description = "Set to true to trigger restore"
+  type        = bool
+  default     = false
+}
+
 variable "backup_date" {
   type = string
+  validation {
+    condition     = length(var.backup_date) > 0
+    error_message = "backup_date must be provided and cannot be empty."
+  }
 }
 
 variable "master_password" {

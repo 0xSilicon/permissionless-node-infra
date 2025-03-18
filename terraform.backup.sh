@@ -17,7 +17,7 @@ s3_tfstate_ec2_db = "$s3_tfstate_ec2_db"
 
 master_password = "$master_password"
 
-backup_date = "20241129"
+backup_date = "$backup_date"
 EOL
 if [ ! -z "$network" ]; then
   echo "network_object = $network" >> terraform.tfvars
