@@ -57,6 +57,7 @@ mainSteps:
   - action: "aws:runShellScript"
     name: "restore_rds_script"
     inputs:
+      timeoutSeconds: 7200
       runCommand:
         - "#!/bin/bash"
         - "echo 'Checking required variables...'"
@@ -96,25 +97,25 @@ mainSteps:
 EOT
 }
 
-resource "terraform_data" "stop_docker" {
-  triggers_replace = {
-    timestamp = timestamp() # Apply할 때마다 실행되도록 변경 감지
-  }
+# resource "terraform_data" "stop_docker" {
+#   triggers_replace = {
+#     timestamp = timestamp() # Apply할 때마다 실행되도록 변경 감지
+#   }
 
-  provisioner "local-exec" {
-    command = <<EOT
-aws ssm send-command \
-  --document-name "${aws_ssm_document.stop_docker.name}" \
-  --targets "Key=instanceIds,Values=${join(",", [data.terraform_remote_state.ec2.outputs.executor_instance_info.id[0], data.terraform_remote_state.ec2.outputs.public_rpc_instance_info.id[0]])}" \
-  --comment "Stopping Docker via Terraform" \
-  --region ${var.aws_region} \
-  --profile ${var.aws_profile_name} \
-  --output-s3-bucket-name ${var.s3_bucket} \
-  --output-s3-key-prefix "ssm-logs/" \
-  --output json > stop_docker_result.json
-EOT
-  }
-}
+#   provisioner "local-exec" {
+#     command = <<EOT
+# aws ssm send-command \
+#   --document-name "${aws_ssm_document.stop_docker.name}" \
+#   --targets "Key=instanceIds,Values=${join(",", [data.terraform_remote_state.ec2.outputs.executor_instance_info.id[0], data.terraform_remote_state.ec2.outputs.public_rpc_instance_info.id[0]])}" \
+#   --comment "Stopping Docker via Terraform" \
+#   --region ${var.aws_region} \
+#   --profile ${var.aws_profile_name} \
+#   --output-s3-bucket-name ${var.s3_bucket} \
+#   --output-s3-key-prefix "ssm-logs/" \
+#   --output json > stop_docker_result.json
+# EOT
+#   }
+# }
 
 resource "terraform_data" "restore_rds" {
   triggers_replace = {
