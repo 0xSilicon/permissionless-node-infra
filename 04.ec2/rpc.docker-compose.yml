@@ -5,7 +5,7 @@ networks:
 services:
   silicon-node:
     container_name: silicon-node
-    image: 0xpolygon/cdk-validium-node:0.6.4-cdk.6
+    image: 0xpolygon/cdk-validium-node:0.6.4-cdk.9
     restart: unless-stopped
     ports:
       - 8545:8545
