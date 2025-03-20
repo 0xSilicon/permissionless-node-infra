@@ -59,7 +59,8 @@ mainSteps:
     inputs:
       runCommand:
         - "#!/bin/bash"
-        - "cd /home/ssm-user"
+        - "echo 'Checking required variables...'"
+        - "if [ -z \"${var.backup_date}\" ]; then echo 'Error: backup_date variable is missing!' >&2; exit 1; fi"
         - "BACKUP_DATE=${var.backup_date}"
         - "S3_BUCKET=chaindata-sepolia.silicon.network"
         - "DB_HOST=${data.terraform_remote_state.rds.outputs.silicon_cluster_info.endpoint[0]}"
@@ -70,11 +71,9 @@ mainSteps:
         - "psql -h \"$DB_HOST\" -U \"$DB_USER\" -d prover_db -c 'DROP SCHEMA IF EXISTS state CASCADE; CREATE SCHEMA state;'"
         - "psql -h \"$DB_HOST\" -U \"$DB_USER\" -d prover_db -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'"
         - "echo 'Restoring state_db from S3...'"
-        - "aws s3 cp \"s3://$S3_BUCKET/$BACKUP_DATE.state.sql.gz\" - || { echo 'Error: Backup file not found!' >&2; exit 1; }"
-        - "zcat | psql -h \"$DB_HOST\" -U \"$DB_USER\" -d state_db || { echo 'Error: state_db restore failed!' >&2; exit 1; }"
+        - "aws s3 cp \"s3://$S3_BUCKET/$BACKUP_DATE.state.sql.gz\" - | zcat | psql -h \"$DB_HOST\" -U \"$DB_USER\" -d state_db || { echo 'state_db restore file error.' >&2; exit 1; }"
         - "echo 'Restoring prover_db from S3...'"
-        - "aws s3 cp \"s3://$S3_BUCKET/$BACKUP_DATE.prover.sql.gz\" - || { echo 'Error: Backup file not found!' >&2; exit 1; }"
-        - "zcat | psql -h \"$DB_HOST\" -U \"$DB_USER\" -d prover_db || { echo 'Error: prover_db restore failed!' >&2; exit 1; }"
+        - "aws s3 cp \"s3://$S3_BUCKET/$BACKUP_DATE.prover.sql.gz\" - | zcat | psql -h \"$DB_HOST\" -U \"$DB_USER\" -d prover_db || { echo 'prover_db restore file error.' >&2; exit 1; }"
 EOT
 }
 
@@ -119,7 +118,7 @@ EOT
 
 resource "terraform_data" "restore_rds" {
   triggers_replace = {
-    restore_enabled = var.restore_enabled # 값이 true일 때만 실행
+    timestamp = timestamp()
   }
 
   provisioner "local-exec" {
