@@ -45,7 +45,7 @@ module "init_rds" {
 
   ami_id = data.terraform_remote_state.ec2_base.outputs.ami_data.ubuntu_arm64
   name = "initialize-rds"
-  instance_type = "t4g.nano"
+  instance_type = "m7g.large"
 
   is_public = true
   disable_api_termination = false
@@ -65,6 +65,18 @@ module "init_rds" {
     apt upgrade -y
     apt install postgresql -y
     apt autoremove -y
+
+    if ! command -v unzip &> /dev/null; then
+        echo "Installing unzip..."
+        apt install -y unzip
+    fi
+    if ! command -v aws &> /dev/null; then
+        echo "Installing AWS CLI..."
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+        rm -rf aws awscliv2.zip
+    fi
 
     wget https://gist.githubusercontent.com/jaybbbb/f84c06eaec263731bc468b24cb5a212d/raw/single_db_server.sql
     export PGPASSWORD="${var.master_password}"
