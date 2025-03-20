@@ -1,0 +1,27 @@
+networks:
+  default:
+    name: silicon
+
+services:
+  silicon-node:
+    container_name: silicon-node
+    image: theradius/radius-cdk-erigon:v1.0.2-radius
+    restart: unless-stopped
+    ports:
+      - 8123:8123
+      - 8133:8133
+      - 6900:6900
+    volumes:
+      - ./config/rpc.config.yaml:/etc/cdk-erigon/config.yaml
+      - ./config/dynamic-silicon-allocs.json:/etc/cdk-erigon/dynamic-silicon-allocs.json
+      - ./config/dynamic-silicon-chainspec.json:/etc/cdk-erigon/dynamic-silicon-chainspec.json
+      - ./config/dynamic-silicon-conf.json:/etc/cdk-erigon/dynamic-silicon-conf.json
+      - ./data/rpc:/etc/cdk-erigon/data/rpc
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 500m
+        max-file: "3"
+    command: ["--config", "/etc/cdk-erigon/config.yaml"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

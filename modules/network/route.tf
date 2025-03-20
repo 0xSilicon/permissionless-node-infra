@@ -41,25 +41,3 @@ resource "aws_route" "private" {
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id = aws_nat_gateway.this[count.index].id
 }
-
-resource "aws_route_table" "db" {
-  count = length(aws_subnet.db)
-  vpc_id = aws_vpc.this.id
-
-  tags = {
-    Name = "${aws_subnet.db[count.index].tags.Name}-route-table"
-  }
-}
-
-resource "aws_route_table_association" "db" {
-  count = length(aws_subnet.db)
-  route_table_id = aws_route_table.db[count.index].id
-  subnet_id = aws_subnet.db[count.index].id
-}
-
-resource "aws_route" "db" {
-  count = length(aws_subnet.db)
-  route_table_id = aws_route_table.db[count.index].id
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id = aws_nat_gateway.this[count.index].id
-}

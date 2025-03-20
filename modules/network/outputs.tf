@@ -20,16 +20,3 @@ output "private_subnet_info" {
     id = aws_subnet.private[*].id
   }
 }
-
-output "db_subnet_info" {
-  value = {
-    name = aws_subnet.db[*].tags.Name
-    id = aws_subnet.db[*].id
-  }
-}
-
-output "db_subnet_group_info" {
-  value = {
-    name = aws_db_subnet_group.this.name
-  }
-}
