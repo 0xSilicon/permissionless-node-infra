@@ -97,25 +97,66 @@ mainSteps:
 EOT
 }
 
-# resource "terraform_data" "stop_docker" {
-#   triggers_replace = {
-#     timestamp = timestamp() # Apply할 때마다 실행되도록 변경 감지
-#   }
+resource "aws_ssm_document" "reset_rds" {
+  name            = "DropAndResetSchemas"
+  document_type   = "Command"
+  document_format = "YAML"
+  content         = <<EOT
+schemaVersion: "2.2"
+description: "Reset RDS Database Schemas and Recreate Tables for Testing"
+mainSteps:
+  - action: "aws:runShellScript"
+    name: "reset_schema_script"
+    inputs:
+      timeoutSeconds: 7200
+      runCommand:
+        - "#!/bin/bash"
+        - "echo 'Starting RDS Schema Reset...'"
+        - "S3_BUCKET=chaindata-sepolia.silicon.network"
+        - "DB_HOST=${data.terraform_remote_state.rds.outputs.silicon_cluster_info.endpoint[0]}"
+        - "DB_USER=${data.terraform_remote_state.rds.outputs.silicon_cluster_info.master_username[0]}"
+        - "export PGPASSWORD=${var.master_password}"
 
-#   provisioner "local-exec" {
-#     command = <<EOT
-# aws ssm send-command \
-#   --document-name "${aws_ssm_document.stop_docker.name}" \
-#   --targets "Key=instanceIds,Values=${join(",", [data.terraform_remote_state.ec2.outputs.executor_instance_info.id[0], data.terraform_remote_state.ec2.outputs.public_rpc_instance_info.id[0]])}" \
-#   --comment "Stopping Docker via Terraform" \
-#   --region ${var.aws_region} \
-#   --profile ${var.aws_profile_name} \
-#   --output-s3-bucket-name ${var.s3_bucket} \
-#   --output-s3-key-prefix "ssm-logs/" \
-#   --output json > stop_docker_result.json
-# EOT
-#   }
-# }
+        - "echo 'Dropping and recreating schemas'"
+        - "psql -h \"$DB_HOST\" -U \"$DB_USER\" -d state_db -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'"
+        - "psql -h \"$DB_HOST\" -U \"$DB_USER\" -d state_db -c 'DROP SCHEMA IF EXISTS state CASCADE;'"
+        - "psql -h \"$DB_HOST\" -U \"$DB_USER\" -d prover_db -c 'DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;'"
+        - "psql -h \"$DB_HOST\" -U \"$DB_USER\" -d prover_db -c 'DROP SCHEMA IF EXISTS state CASCADE; CREATE SCHEMA state;'"
+
+        - "echo 'Creating tables in prover_db...'"
+        - "psql -h \"$DB_HOST\" -U \"$DB_USER\" -d prover_db -c 'CREATE TABLE IF NOT EXISTS state.nodes (hash BYTEA PRIMARY KEY, data BYTEA NOT NULL);'"
+        - "psql -h \"$DB_HOST\" -U \"$DB_USER\" -d prover_db -c 'CREATE TABLE IF NOT EXISTS state.program (hash BYTEA PRIMARY KEY, data BYTEA NOT NULL);'"
+
+        - "echo 'Restoring user permissions and schema ownership...'"
+        - "psql -h \"$DB_HOST\" -U \"$DB_USER\" -d prover_db -c 'ALTER DATABASE prover_db OWNER TO prover_user;'"
+        - "psql -h \"$DB_HOST\" -U \"$DB_USER\" -d prover_db -c 'ALTER SCHEMA state OWNER TO prover_user;'"
+        - "psql -h \"$DB_HOST\" -U \"$DB_USER\" -d prover_db -c 'ALTER SCHEMA public OWNER TO prover_user;'"
+        - "psql -h \"$DB_HOST\" -U \"$DB_USER\" -d prover_db -c 'ALTER USER prover_user SET SEARCH_PATH=state;'"
+
+        # Completion message
+        - "echo 'Schema reset and table recreation completed successfully.'"
+EOT
+}
+
+resource "terraform_data" "stop_docker" {
+  triggers_replace = {
+    timestamp = timestamp() # Apply할 때마다 실행되도록 변경 감지
+  }
+
+  provisioner "local-exec" {
+    command = <<EOT
+aws ssm send-command \
+  --document-name "${aws_ssm_document.stop_docker.name}" \
+  --targets "Key=instanceIds,Values=${join(",", [data.terraform_remote_state.ec2.outputs.executor_instance_info.id[0], data.terraform_remote_state.ec2.outputs.public_rpc_instance_info.id[0]])}" \
+  --comment "Stopping Docker via Terraform" \
+  --region ${var.aws_region} \
+  --profile ${var.aws_profile_name} \
+  --output-s3-bucket-name ${var.s3_bucket} \
+  --output-s3-key-prefix "ssm-logs/" \
+  --output json > stop_docker_result.json
+EOT
+  }
+}
 
 resource "terraform_data" "restore_rds" {
   triggers_replace = {
