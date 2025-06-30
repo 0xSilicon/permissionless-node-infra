@@ -24,21 +24,6 @@ output "private_subnet_info" {
   description = "private subnet info"
 }
 
-output "db_subnet_info" {
-  value = {
-    name = module.network[*].db_subnet_info.name
-    id = module.network[*].db_subnet_info.id
-  }
-  description = "db subnet info"
-}
-
-output "db_subnet_group_info" {
-  value = {
-    name = module.network[*].db_subnet_group_info.name
-  }
-  description = "database subnet group info"
-}
-
 output "availability_zones" {
   value = var.availability_zones
 }
