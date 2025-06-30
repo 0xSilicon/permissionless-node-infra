@@ -1,0 +1,471 @@
+log.dir.path: /etc/cdk-erigon/log/cdk-erigon.log
+
+datadir: /etc/cdk-erigon/data/rpc
+
+chain: dynamic-silicon
+
+# Enables full witness generation, which provides comprehensive proof data for transactions.
+# This can be useful for debugging and verification purposes.
+# Default: true
+zkevm.witness-full: false
+
+## Limbo Processing
+# Activate processing for batches that failed verification, allowing the network to recover gracefully.
+# This setting helps maintain network functionality while providing insights into failed batches.
+# Default: false
+zkevm.limbo: true
+
+## Gas Price Settings
+# Sets the effective gas price as a percentage for various tdyransaction types:
+# - ETH transfers
+# - ERC20 token transfers
+# - Contract invocations
+# - Contract deployments
+# A value of 1 means 1% of the base gas price will be applied.
+# Defaults: 1
+zkevm.effective-gas-price-eth-transfer: 1
+zkevm.effective-gas-price-erc20-transfer: 1
+zkevm.effective-gas-price-contract-invocation: 1
+zkevm.effective-gas-price-contract-deployment: 1
+
+zkevm.default-gas-price: 1000000000
+
+zkevm.reject-low-gas-price-transactions: true
+
+zkevm.gas-price-factor: 0.015
+
+zkevm.da-url: "http://da1.silicon.network:8444,http://da2.silicon.network:8444,http://silicon-mainnet-da-3.nodeinfra.com:8444"
+
+zkevm.rpc-ratelimit: 250
+
+zkevm.data-stream-host: 0.0.0.0
+
+zkevm.data-stream-port: 6900
+
+# Specify the encoding format used for data streaming:
+# - 1: PreBigEndian (legacy format)
+# - 2: BigEndian (improved format)
+# - 3: Latest format with additional features
+# Default: 2
+# fork12 or after
+zkevm.datastream-version: 3
+# before fork12
+
+zkevm.sequencer-block-seal-time: 3s
+
+zkevm.sequencer-batch-seal-time: 5m
+
+zkevm.sequencer-halt-on-batch-number: 0
+
+# Enables the processing of pre-EIP155 transactions.
+# Useful for maintaining backward compatibility with older wallets or contracts.
+# Note: Enabling this may introduce security risks.
+# Default: false
+zkevm.allow-pre-eip155-transactions: true
+
+zkevm.executor-strict: true
+
+zkevm.executor-urls: http://cdk-validium-executor:50071
+
+zkevm.address-admin: "0xef5d7af5dbbee845860e75ce8f8e8fe7f6e8dbf7"
+
+zkevm.address-sequencer: "0x47ed9538faa1522be7abd8a8bcaec8d9c04ed60d"
+
+# Specify the address of the PolygonRollupManager smart contract.
+# This contract manages the overall rollup process and coordinates different rollups.
+# NOTE: This flag should be renamed `zkevm.address-rollup-manager`.
+# https://github.com/0xPolygonHermez/cdk-erigon/issues/1253
+# Default: ""
+zkevm.address-rollup: "0x5132a183e9f3cb7c848b0aac5ae0c4f0491b7ab2"
+
+# Specify the address of the Rollup smart contract, specific to a rollup (or validium) chain.
+# Essential for submitting batches and managing the state of the rollup.
+# NOTE: This flag should be renamed `zkevm.address-rollup`.
+# https://github.com/0xPolygonHermez/cdk-erigon/issues/1253
+# Default: ""
+zkevm.address-zkevm: "0x419dcd0f72ebafd3524b65a97ac96699c7fbebdb"
+
+# Specify the address of the PolygonZkEVMGlobalExitRoot contract.
+# This contract manages the global exit root (GER), which is crucial for cross-chain operations
+# and ensuring the integrity of withdrawals from the L2 chains to the main L1 network.
+# Default: ""
+zkevm.address-ger-manager: "0x580bda1e7a0cfae92fa7f6c20a3794f169ce3cfb"
+
+zkevm.l1-chain-id: 1
+
+#zkevm.l1-rpc-url:
+
+# The rollup identifier.
+# NOTE: This flag should be renamed `zkevm.rollup-id`.
+# https://github.com/0xPolygonHermez/cdk-erigon/issues/1253
+# Default: 1 (zkEVM mainnet)
+zkevm.l1-rollup-id: 10
+
+# Define the number of blocks to scan when querying for verifications and sequences.
+# Larger ranges may be more efficient but could increase query time and resource usage.
+# Default: 20_000
+zkevm.l1-block-range: 10_000
+
+# Set the time, in milliseconds, to wait between L1 queries.
+# Helps prevent overwhelming the L1 node with requests.
+# Default: 6_000
+zkevm.l1-query-delay: 6_000
+
+zkevm.l1-highest-block-type: safe
+
+zkevm.l1-matic-contract-address: "0x455e53cbb86018ac2b8092fdcd39d8444affc3f6"
+
+# The L1 block number from which to start syncing historical data.
+# Usually set to the block where the zkevm contracts were deployed.
+# Default: 0
+zkevm.l1-first-block: 20572039
+
+# URL of the pool manager, applicable only for non-sequencer nodes.
+# If specified, all eth_sendRawTransaction calls will be redirected to this service for processing.
+# If not specified, all eth_sendRawTransaction calls will be redirected to l2-sequencer-rpc-url.
+# Default: ""
+# zkevm.pool-manager-url: http://pool-manger.node.0xsilicon.net
+zkevm.l2-sequencer-rpc-url: https://sequencer.node.silicon.network
+
+zkevm.l2-datastreamer-url: sequencer-ds.node.0xsilicon.net:80
+
+zkevm.l2-chain-id: 2355
+
+# --------------------------------------------------------------------------------------------------
+# TODO: RADIUS CONFIGURATION
+# --------------------------------------------------------------------------------------------------
+
+# --------------------------------------------------------------------------------------------------
+#   _______  __  ____   ___   ___  _
+#  |_   _\ \/ / |  _ \ / _ \ / _ \| |
+#    | |  \  /  | |_) | | | | | | | |
+#    | |  /  \  |  __/| |_| | |_| | |___
+#    |_| /_/\_\ |_|    \___/ \___/|_____|
+#
+# --------------------------------------------------------------------------------------------------
+# Disable the internal transaction pool and block producer.
+# Default: false
+txpool.disable: true
+
+# The listening port of the network.
+# Default: 30303
+port: 30303
+
+# The version of eth p2p protocol supported.
+# Default: [67, 68]
+p2p.protocol: [67, 68]
+
+# The allowed ports to pick for different eth p2p protocol versions.
+# As follows <port-a>,<port-b>,..,<port-i>.
+# Default: [30303, 30304, 30305, 30306, 30307]
+p2p.allowed-ports: [30303, 30304, 30305, 30306, 30307]
+
+# A comma separated sentry addresses.
+# Format: <host>:<port>,<host>:<port>
+# Default: ""
+sentry.api.addr: ""
+
+# Log detailed peer info when a peer connects or disconnects.
+# Enable to integrate with observer.
+sentry.log-peer-info: false
+
+# Drop useless peers, aka peers that return empty body or header responses.
+# Default: false
+# sentry.drop-useless-peers: false
+
+# The downloaded address.
+# Format: <host>:<port>
+# Default: ""
+downloader.api.addr: ""
+
+# A comma separated enode URLs for P2P discovery bootstrap.
+# Default: ""
+bootnodes: ""
+
+# A comma separated enode URLs to connect to.
+# Default: ""
+staticpeers: ""
+
+# A comma separated enode URLs which are always allowed to connect, even above the peer limit.
+# Default: ""
+trustedpeers: ""
+
+# The P2P node key as hex (for testing)
+# nodekey:
+
+# The NAT port mapping mechanism.
+# nat:
+
+# Disables the peer discovery mechanism (manual peer addition).
+# Default: false
+nodiscover: true
+
+# Enable the experimental RLPx V5 (Topic Discovery) mechanism.
+# Default: false
+v5disc: false
+
+# Restrict network communication to the given IP networks (CIDR masks).
+# Default: ""
+netrestrict: ""
+
+
+# ==============================================================================
+#   ____  ____  _____     ___  _____ _____
+#  |  _ \|  _ \|_ _\ \   / / \|_   _| ____|
+#  | |_) | |_) || | \ \ / / _ \ | | |  _|
+#  |  __/|  _ < | |  \ V / ___ \| | | |___
+#  |_|   |_| \_\___|  \_/_/   \_\_| |_____|
+#
+# --------------------------------------------------------------------------------------------------
+# The address of Erigon's internal GRPC API.
+# Default: 127.0.0.1:9090
+private.api.addr: localhost:9092
+
+# The amount of requests the server can handle simultaneously.
+# Requests over this limit will wait.
+# Default: 31872
+private.api.ratelimit: 31872
+
+
+# ==============================================================================
+#   _____ ___  ____  ____  _____ _   _ _____
+#  |_   _/ _ \|  _ \|  _ \| ____| \ | |_   _|
+#    | || | | | |_) | |_) |  _| |  \| | | |
+#    | || |_| |  _ <|  _ <| |___| |\  | | |
+#    |_| \___/|_| \_\_| \_\_____|_| \_| |_|
+#
+# --------------------------------------------------------------------------------------------------
+# The listening port of the BitTorrent server.
+# Default: 42069
+torrent.port: 42070
+
+# The verbosity of the torrent
+# Default: 2 where 2 means warn
+torrent.verbosity: 2
+
+# The download rate of the torrent in bytes per second.
+# Default: 16mb
+torrent.download.rate: 16mb
+
+# The upload rate of the torrent in bytes per second.
+# Default: 4mb
+torrent.upload.rate: 4mb
+
+# The amount of files to download in parallel using the torrent.
+# If the network has enough senders, 1 to 3 slots are enough.
+# Otherwise, try to increase the number of slots to 5 to 7.
+# Using a too big value will slow down everything though.
+# Default: 3
+torrent.download.slots: 3
+
+# The maximum number of peers.
+# It is said to not be used at the moment!
+# Default: 100
+torrent.maxpeers: 0
+
+# A comma separated enode URLs to connect to.
+# Default: ""
+torrent.staticpeers: ""
+
+# The number of connections per file.
+# Default: 10
+torrent.conns.perfile: 10
+
+
+# ==============================================================================
+#   ____  ____   ____
+#  |  _ \|  _ \ / ___|
+#  | |_) | |_) | |
+#  |  _ <|  __/| |___
+#  |_| \_\_|    \____|
+#
+# ==============================================================================
+# Enable the graphql endpoint.
+# Default: false
+graphql: false
+
+# Limit the amount of goroutines to process a batch request.
+# A batch still can have unlimited amount of request.
+rpc.batch.concurrency: 2
+
+# Erigon has enabled JSON streaming for some heavy endpoints (like trace_*).
+# It greatly reduces the amount of RAM (in some cases, from 30GB to 30MB) but it produces invalid
+# JSON format if an error happened in the middle of the streaming.
+# Default: false
+rpc.streaming.disable: false
+
+# The maximum number of requests in a batch.
+# Default: 100
+rpc.batch.limit: 100
+
+# The maximum number of bytes returned from eth_call or similar invocation.
+# Default: 100_000
+rpc.returndata.limit: 100_000
+
+# Specify a granular (method-by-method) API allow list.
+# Default: ""
+rpc.accessList: ""
+
+# Sets a cap on gas that can be used in eth_call/estimateGas.
+# Set to 0 to remove the cap.
+# Deault: 50_000_000
+rpc.gascap: 50_000_000
+
+
+# ==============================================================================
+#   _   _ _____ _____ ____    ____  ____   ____
+#  | | | |_   _|_   _|  _ \  |  _ \|  _ \ / ___|
+#  | |_| | | |   | | | |_) | | |_) | |_) | |
+#  |  _  | | |   | | |  __/  |  _ <|  __/| |___
+#  |_| |_| |_|   |_| |_|     |_| \_\_|    \____|
+#
+# --------------------------------------------------------------------------------------------------
+# Enable the HTTP RPC server.
+# Default: true
+http: true
+
+# The listening interface of the HTTP RPC server.
+http.addr: 0.0.0.0
+
+# The listening port of the HTTP RPC server.
+http.port: 8545
+
+# Enable compression over HTTP.
+# Default: false
+http.compression: false
+
+# A comma separated list of domains from which to accept cross origin requests (browser enforced).
+# It accepts '*' as a wildcard.
+# Default: "*"
+http.corsdomain: "*"
+
+# A comma separated list of virtual hostnames from which to accept requests (server enforced).
+# It accepts '*' as a wildcard.
+# Default: "localhost"
+http.vhosts: "*"
+
+# The APIs offered by the HTTP RPC server.
+# Default: "eth,erigon,engine"
+http.api: [eth, net, web3, erigon, zkevm, txpool]
+
+# Trace HTTP requests with INFO level.
+# Default: false
+http.trace: false
+
+
+# ==============================================================================
+#  __        ______    ____  ____   ____
+#  \ \      / / ___|  |  _ \|  _ \ / ___|
+#   \ \ /\ / /\___ \  | |_) | |_) | |
+#    \ V  V /  ___) | |  _ <|  __/| |___
+#     \_/\_/  |____/  |_| \_\_|    \____|
+#
+# --------------------------------------------------------------------------------------------------
+# Enable the WS RPC server.
+# Default: false
+ws: true
+
+# The listening interface of the WS RPC server.
+ws.addr: 0.0.0.0
+
+# The listening port of the WS RPC server.
+ws.port: 8546
+
+ws.api: [eth, net, web3, erigon, zkevm, txpool]
+
+
+# ==============================================================================
+#      _   _   _ _____ _   _   ____  ____   ____
+#     / \ | | | |_   _| | | | |  _ \|  _ \ / ___|
+#    / _ \| | | | | | | |_| | | |_) | |_) | |
+#   / ___ \ |_| | | | |  _  | |  _ <|  __/| |___
+#  /_/   \_\___/  |_| |_| |_| |_| \_\_|    \____|
+#
+# --------------------------------------------------------------------------------------------------
+# The listening interface of the engine API.
+# Default: localhost
+# authrpc.addr: 0.0.0.0
+
+# The listening port of the engine API.
+# authrpc.port: 8551
+
+# The path to the token that ensures safe connection between CL and EL.
+# Default: ""
+# authrpc.jwtsecret: ""
+
+# A comma separated list of virtual hostnames from which to accept Engine API requests (server enforced).
+# Accepts '*' wildcard.
+# authrpc.vhosts: "*"
+
+
+# ==============================================================================
+#   __  __ _____ _____ ____  ___ ____ ____
+#  |  \/  | ____|_   _|  _ \|_ _/ ___/ ___|
+#  | |\/| |  _|   | | | |_) || | |   \___ \
+#  | |  | | |___  | | |  _ < | | |___ ___) |
+#  |_|  |_|_____| |_| |_| \_\___\____|____/
+#
+# --------------------------------------------------------------------------------------------------
+# Enable the metrics HTTP server.
+# Default: false
+metrics: true
+
+# The listening interface of the metrics server.
+# Default: 127.0.0.1
+metrics.addr: 0.0.0.0
+
+# The listening address of the metrics server.
+# Default: 6060
+metrics.port: 9090
+
+
+# ==============================================================================
+#   ____  ____  ____   ___  _____
+#  |  _ \|  _ \|  _ \ / _ \|  ___|
+#  | |_) | |_) | |_) | | | | |_
+#  |  __/|  __/|  _ <| |_| |  _|
+#  |_|   |_|   |_| \_\\___/|_|
+#
+# --------------------------------------------------------------------------------------------------
+# Enable the pprof HTTP server.
+# Default: false
+pprof: true
+
+# The listening interface of the pprof server.
+# Default: 127.0.0.1
+pprof.addr: 0.0.0.0
+
+# The listening port of the pprof server.
+# Default: 6060
+pprof.port: 6060
+
+# Write CPU profile to the given file
+# pprof.cpuprofile: /tmp/cdk-erigon.cpuprofile
+
+
+# --------------------------------------------------------------------------------------------------
+#   ____  _____ ____  _   _  ____
+#  |  _ \| ____| __ )| | | |/ ___|
+#  | | | |  _| |  _ \| | | | |  _
+#  | |_| | |___| |_) | |_| | |_| |
+#  |____/|_____|____/ \___/ \____|
+#
+# --------------------------------------------------------------------------------------------------
+# Enable debug timers. This adds useful timings into the logs which can help narrow down performance
+# issues.
+# Default: false
+debug.timers: true
+
+# Disable syncing.
+# Default: false
+debug.no-sync: false
+
+# Limit the number of blocks to sync.
+# Default: 0
+debug.limit: 0
+
+# The number of blocks to process each run of the stage loop.
+# debug.step:
+
+# Start incrementing by debug.step after this block.
+# debug.step-after:

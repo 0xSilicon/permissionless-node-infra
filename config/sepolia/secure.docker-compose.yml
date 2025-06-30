@@ -1,0 +1,27 @@
+networks:
+  default:
+    external: true
+    name: silicon
+
+services:
+  secure-rpc-provider:
+    container_name: secure-rpc-provider
+    build:
+      context: .
+      dockerfile: ./docker_files/secure-rpc-provider.Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8545:8545"
+    working_dir: /app/secure-rpc-provider
+    volumes:
+      - ./scripts/secure-rpc-provider-entrypoint.sh:/app/secure-rpc-provider/scripts/secure-rpc-provider-entrypoint.sh
+      - secure-rpc-provider_data:/app/secure-rpc-provider/data
+    entrypoint:
+      [
+        "/bin/bash",
+        "/app/secure-rpc-provider/scripts/secure-rpc-provider-entrypoint.sh",
+      ]
+
+volumes:
+  secure-rpc-provider_data:

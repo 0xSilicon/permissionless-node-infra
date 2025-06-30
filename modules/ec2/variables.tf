@@ -14,7 +14,7 @@ variable "block_device_option" {
     delete_on_termination = bool
   })
   default = {
-    size_gib = 8
+    size_gib = 128
     delete_on_termination = true
   }
 }
