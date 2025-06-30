@@ -8,5 +8,4 @@ module "network" {
   }
   availability_zones = var.availability_zones
   subnets = var.subnets
-  skipRDS = var.skipRDS
 }

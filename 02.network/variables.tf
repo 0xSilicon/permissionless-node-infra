@@ -34,18 +34,11 @@ variable "subnets" {
   type = object({
     newbits = number,
     public_netnum = number,
-    private_netnum = number,
-    db_netnum = number,
+    private_netnum = number
   })
   default = {
     newbits = 8,
     public_netnum = 1,
-    private_netnum = 11,
-    db_netnum = 21,
+    private_netnum = 11
   }
-}
-
-variable "skipRDS" {
-  type = bool
-  default = false
 }

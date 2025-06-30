@@ -16,6 +16,29 @@ resource "aws_iam_role" "this" {
   })
 }
 
+resource "aws_iam_role_policy" "s3_access_policy" {
+  name   = "${var.name}-s3-access"
+  role   = aws_iam_role.this.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ],
+        Resource = [
+          "arn:aws:s3:::chaindata-${var.name}.silicon.network",
+          "arn:aws:s3:::chaindata-${var.name}.silicon.network/*"
+        ]
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy_attachment" "ssm_policy" {
   for_each = toset([
     "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM",
