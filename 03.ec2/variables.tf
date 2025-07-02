@@ -52,6 +52,12 @@ variable "network_object" {
   }
 }
 
+variable "secureMode" {
+  description = "If true, enable secure-rpc-provider setup"
+  type        = bool
+  default     = true
+}
+
 variable "launchL1" {
   type = bool
   default = true

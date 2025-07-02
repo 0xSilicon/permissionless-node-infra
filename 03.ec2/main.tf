@@ -113,6 +113,15 @@ module "l1_rpc" {
   depends_on = [ module.l1_rpc_sg ]
 }
 
+locals {
+  secure_rpc_setup = var.secureMode ? templatefile(
+    "${path.module}/../config/${var.nameOfL1}/secure_rpc_setup.sh.tpl", 
+    {
+      secure_rpc_compose = "../config/${var.nameOfL1}/secure_rpc.docker-compose.yml"
+    }
+  ) : ""
+}
+
 module "public_erigon_rpc" {
   count = 1
   source = "../modules/ec2"
@@ -143,6 +152,8 @@ module "public_erigon_rpc" {
     unzip awscliv2.zip
     ./aws/install
 
+    sudo snap start amazon-ssm-agent
+
     # [[ erigon rpc setup ]]
     mkdir -p config
     pushd config
@@ -172,27 +183,7 @@ module "public_erigon_rpc" {
     sed -i 's|{{S3_BUCKET}}|${var.s3_bucket}|' /home/ssm-user/restore-from-s3.sh
 
     # [[ secure-rpc-provider setup ]]
-    sudo git clone --branch feat/execs --single-branch https://github.com/radiusxyz/dockerized-sbb.git
-    mv dockerized-sbb /home/ssm-user/dockerized-sbb
-
-    cat <<EOT > /home/ssm-user/dockerized-sbb/.env
-      ROLLUP_ID="radius_rollup"
-      ROLLUP_RPC_URL="http://silicon-node:8123"
-
-      SECURE_RPC_PROVIDER_MODE="init"
-      SECURE_RPC_EXTERNAL_RPC_URL="http://0.0.0.0:8545"
-
-      TX_ORDERER_EXTERNAL_RPC_URL_LIST="http://35.189.33.95:11102"
-      DISTRIBUTED_KEY_GENERATOR_EXTERNAL_RPC_URL="http://35.189.33.95:11002"
-
-      ENCRYPTED_TRANSACTION_TYPE="skde"
-    EOT
-
-    echo '${file("../config/${var.nameOfL1}/secure.docker-compose.yml")}' > /home/ssm-user/dockerized-sbb/docker-compose.yml
-
-    chown -R ssm-user:ssm-user /home/ssm-user/dockerized-sbb/
-
-    sudo docker compose -f /home/ssm-user/dockerized-sbb/docker-compose.yml up -d
+    ${local.secure_rpc_setup}
 
   EOF
 
