@@ -13,12 +13,18 @@ S3_PATH="s3://$S3_BUCKET/$S3_PREFIX/$TODAY.tar.gz"
 
 echo "[$TODAY] Starting backup..."
 
+# 0. Ensure pigz is available
+if ! command -v pigz &> /dev/null; then
+  echo "Installing pigz (parallel gzip)..."
+  sudo apt update && sudo apt install -y pigz
+fi
+
 # 1. Copy data to temporary directory
 sudo mkdir -p "$TMP_BACKUP_DIR"
-sudo rsync -a --delete "$DATA_DIR/" "$TMP_BACKUP_DIR/"
+sudo rsync -a --info=progress2 --delete "$DATA_DIR/" "$TMP_BACKUP_DIR/"
 
 # 2. Compress
-sudo tar -czf "$TMP_ARCHIVE" -C "$TMP_BACKUP_DIR" .
+sudo tar -I pigz -cf "$TMP_ARCHIVE" -C "$TMP_BACKUP_DIR" .
 
 # 3. Set ownership for upload
 sudo chown ubuntu:ubuntu "$TMP_ARCHIVE"
