@@ -2,10 +2,10 @@
 
 # Clone the repo
 sudo git clone --branch feat/execs --single-branch https://github.com/radiusxyz/dockerized-sbb.git
-mv dockerized-sbb /home/ssm-user/dockerized-sbb
+mv dockerized-sbb /home/ubuntu/dockerized-sbb
 
 # Write the .env file
-cat <<EOF > /home/ssm-user/dockerized-sbb/.env
+cat <<EOF > /home/ubuntu/dockerized-sbb/.env
 ROLLUP_ID="radius_rollup"
 ROLLUP_RPC_URL="http://silicon-node:8123"
 SECURE_RPC_PROVIDER_MODE="init"
@@ -16,8 +16,8 @@ ENCRYPTED_TRANSACTION_TYPE="skde"
 EOF
 
 # Write docker-compose file
-echo "${secure_rpc_compose}" > /home/ssm-user/dockerized-sbb/docker-compose.yml
+echo "${secure_rpc_compose}" > /home/ubuntu/dockerized-sbb/docker-compose.yml
 
 # Set permissions and run
-chown -R ssm-user:ssm-user /home/ssm-user/dockerized-sbb/
-sudo docker compose -f /home/ssm-user/dockerized-sbb/docker-compose.yml up -d
+chown -R ubuntu:ubuntu /home/ubuntu/dockerized-sbb/
+sudo docker compose -f /home/ubuntu/dockerized-sbb/docker-compose.yml up -d

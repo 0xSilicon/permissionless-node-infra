@@ -10,9 +10,9 @@ if [ -z "$RESTORE_DATE" ]; then
   exit 1
 fi
 
-DATA_DIR="/home/ssm-user/data"
-TMP_RESTORE_DIR="/home/ssm-user/tmp/data-restore-$RESTORE_DATE"
-ARCHIVE_PATH="/home/ssm-user/tmp/$RESTORE_DATE.tar.gz"
+DATA_DIR="/home/ubuntu/data"
+TMP_RESTORE_DIR="/home/ubuntu/tmp/data-restore-$RESTORE_DATE"
+ARCHIVE_PATH="/home/ubuntu/tmp/$RESTORE_DATE.tar.gz"
 S3_BUCKET="{{S3_BUCKET}}" 
 S3_PATH="s3://$S3_BUCKET/backups/$RESTORE_DATE.tar.gz"
 
@@ -27,7 +27,7 @@ sudo tar -xzf "$ARCHIVE_PATH" -C "$TMP_RESTORE_DIR"
 
 # 3. Replace existing data
 echo "[*] Stopping docker services..."
-sudo docker compose -f /home/ssm-user/docker-compose.yml down
+sudo docker compose -f /home/ubuntu/docker-compose.yml down
 
 echo "[*] Restoring data to $DATA_DIR..."
 sudo rsync -a --delete "$TMP_RESTORE_DIR/" "$DATA_DIR/"
@@ -37,6 +37,6 @@ sudo rm -rf "$TMP_RESTORE_DIR" "$ARCHIVE_PATH"
 
 # 5. Restart
 echo "[*] Restarting docker services..."
-sudo docker compose -f /home/ssm-user/docker-compose.yml up -d
+sudo docker compose -f /home/ubuntu/docker-compose.yml up -d
 
 echo "[✓] Restore complete from $RESTORE_DATE"

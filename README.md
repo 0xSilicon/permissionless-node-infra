@@ -92,7 +92,7 @@ Erigon uses a **file-based storage** instead of an external DB, so the node's **
 
 ### 📂 Data Directory Handling
 
-- The Erigon data is stored under `/home/ssm-user/data`
+- The Erigon data is stored under `/home/ubuntu/data`
 - Backups are taken by compressing this directory and uploading it to S3
 - Restores fully replace the local data with the contents from the archive
 
