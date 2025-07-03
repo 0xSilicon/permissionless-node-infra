@@ -5,7 +5,7 @@ networks:
 services:
   silicon-node:
     container_name: silicon-node
-    image: theradius/radius-cdk-erigon:v1.0.2-radius
+    image: hermeznetwork/cdk-erigon:v2.61.20
     restart: unless-stopped
     ports:
       - 8123:8123

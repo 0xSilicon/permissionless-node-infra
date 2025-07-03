@@ -89,6 +89,7 @@ s3_tfstate_network = "$s3_tfstate_network"
 s3_tfstate_ec2_base = "$s3_tfstate_ec2_base"
 s3_tfstate_ec2_lb = "$s3_tfstate_ec2_lb"
 
+secureMode = $secureMode
 launchL1 = $launchL1
 urlOfL1 = "$urlOfL1"
 skipNETWORK = $skipNETWORK
