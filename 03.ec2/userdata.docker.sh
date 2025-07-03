@@ -30,12 +30,4 @@ apt autoremove -y
 systemctl enable docker
 systemctl start docker
 
-# Wait for ssm-user to be created (max 2 minutes)
-for i in {1..60}; do
-  id -u ssm-user && break
-  sleep 2
-done
-
-sudo docker network create silicon || true
-
 echo "[✔] user_data.docker.sh completed successfully"

@@ -7,11 +7,11 @@ StartLimitIntervalSec=0
 Type=simple
 # optional, specify a specific version
 #Environment=USE_PRYSM_VERSION=v1.0.0-alpha.7
-ExecStart=/home/ssm-user/beacon/prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --mainnet --jwt-secret=/home/ssm-user/jwt.hex --datadir=/home/ssm-user/beacon --checkpoint-sync-url=https://sync-mainnet.beaconcha.in --genesis-beacon-api-url=https://sync-mainnet.beaconcha.in
+ExecStart=/home/ubuntu/beacon/prysm.sh beacon-chain --execution-endpoint=http://localhost:8551 --mainnet --jwt-secret=/home/ubuntu/jwt.hex --datadir=/home/ubuntu/beacon --checkpoint-sync-url=https://sync-mainnet.beaconcha.in --genesis-beacon-api-url=https://sync-mainnet.beaconcha.in
 
 Restart=on-failure
 RestartSec=10
-User=ssm-user
+User=ubuntu
 
 LimitNOFILE = infinity
 LimitNPROC = infinity

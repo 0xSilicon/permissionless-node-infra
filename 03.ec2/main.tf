@@ -120,6 +120,13 @@ locals {
       secure_rpc_compose = "../config/${var.nameOfL1}/secure_rpc.docker-compose.yml"
     }
   ) : ""
+  
+  erigon_image        = "hermeznetwork/cdk-erigon:v2.61.20"
+  secure_erigon_image = "theradius/radius-cdk-erigon:v1.0.2-radius"
+
+  base_compose = file("${path.module}/../config/${var.nameOfL1}/erigon.docker-compose.yml")
+
+  erigon_compose = var.secureMode ? replace(local.base_compose, local.erigon_image, local.secure_erigon_image) : local.base_compose
 }
 
 module "public_erigon_rpc" {
@@ -164,23 +171,23 @@ module "public_erigon_rpc" {
     echo "zkevm.l1-rpc-url: \"${local.ethermanurl}\"" | tee -a rpc.config.yaml
     popd
 
-    echo '${file("../config/${var.nameOfL1}/erigon.docker-compose.yml")}' > /home/ssm-user/docker-compose.yml
+    echo '${replace(local.erigon_compose, "'", "'\"'\"'")}' > /home/ubuntu/docker-compose.yml
 
-    mkdir -p /home/ssm-user/config
-    mv config/*.json /home/ssm-user/config/
-    mv config/rpc.config.yaml /home/ssm-user/config/
+    mkdir -p /home/ubuntu/config
+    mv config/*.json /home/ubuntu/config/
+    mv config/rpc.config.yaml /home/ubuntu/config/
 
-    mkdir -p /home/ssm-user/data /home/ssm-user/data/rpc /home/ssm-user/data/log
-    chown -R ssm-user:ssm-user /home/ssm-user/
-    chmod -R a+w /home/ssm-user/data
+    mkdir -p /home/ubuntu/data /home/ubuntu/data/rpc /home/ubuntu/data/log
+    chown -R ubuntu:ubuntu /home/ubuntu/
+    chmod -R a+w /home/ubuntu/data
 
-    sudo docker compose -f /home/ssm-user/docker-compose.yml up -d
+    sudo docker compose -f /home/ubuntu/docker-compose.yml up -d
 
     # [[ erigon rpc backup/restore scripts ]]
-    echo '${file("../config/backup-to-s3.sh")}' > /home/ssm-user/backup-to-s3.sh
-    sed -i 's|{{S3_BUCKET}}|${var.s3_bucket}|' /home/ssm-user/backup-to-s3.sh
-    echo '${file("../config/restore-from-s3.sh")}' > /home/ssm-user/restore-from-s3.sh
-    sed -i 's|{{S3_BUCKET}}|${var.s3_bucket}|' /home/ssm-user/restore-from-s3.sh
+    echo '${file("../config/backup-to-s3.sh")}' > /home/ubuntu/backup-to-s3.sh
+    sed -i 's|{{S3_BUCKET}}|${var.s3_bucket}|' /home/ubuntu/backup-to-s3.sh
+    echo '${file("../config/restore-from-s3.sh")}' > /home/ubuntu/restore-from-s3.sh
+    sed -i 's|{{S3_BUCKET}}|${var.s3_bucket}|' /home/ubuntu/restore-from-s3.sh
 
     # [[ secure-rpc-provider setup ]]
     ${local.secure_rpc_setup}
