@@ -159,8 +159,6 @@ module "public_erigon_rpc" {
     unzip awscliv2.zip
     ./aws/install
 
-    sudo snap start amazon-ssm-agent
-
     # [[ erigon rpc setup ]]
     mkdir -p config
     pushd config
