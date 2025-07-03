@@ -30,7 +30,7 @@ echo "[*] Stopping docker services..."
 sudo docker compose -f /home/ubuntu/docker-compose.yml down
 
 echo "[*] Restoring data to $DATA_DIR..."
-sudo rsync -a --delete "$TMP_RESTORE_DIR/" "$DATA_DIR/"
+sudo rsync -a --info=progress2 --delete "$TMP_RESTORE_DIR/" "$DATA_DIR/"
 
 # 4. Cleanup
 sudo rm -rf "$TMP_RESTORE_DIR" "$ARCHIVE_PATH"
