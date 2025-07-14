@@ -328,7 +328,7 @@ http: true
 http.addr: 0.0.0.0
 
 # The listening port of the HTTP RPC server.
-http.port: 8545
+http.port: 8123
 
 # Enable compression over HTTP.
 # Default: false
