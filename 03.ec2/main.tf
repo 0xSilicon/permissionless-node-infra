@@ -162,10 +162,10 @@ module "public_erigon_rpc" {
     # [[ erigon rpc setup ]]
     mkdir -p config
     pushd config
-    wget https://raw.githubusercontent.com/0xSilicon/permissionless-node-infra/refs/heads/erigon/config/${var.nameOfL1}/dynamic-silicon-allocs.json
-    wget https://raw.githubusercontent.com/0xSilicon/permissionless-node-infra/refs/heads/erigon/config/${var.nameOfL1}/dynamic-silicon-chainspec.json
-    wget https://raw.githubusercontent.com/0xSilicon/permissionless-node-infra/refs/heads/erigon/config/${var.nameOfL1}/dynamic-silicon-conf.json
-    wget https://raw.githubusercontent.com/0xSilicon/permissionless-node-infra/refs/heads/erigon/config/${var.nameOfL1}/rpc.config.yaml
+    wget https://raw.githubusercontent.com/0xSilicon/permissionless-node-infra/main/config/${var.nameOfL1}/dynamic-silicon-allocs.json
+    wget https://raw.githubusercontent.com/0xSilicon/permissionless-node-infra/main/config/${var.nameOfL1}/dynamic-silicon-chainspec.json
+    wget https://raw.githubusercontent.com/0xSilicon/permissionless-node-infra/main/config/${var.nameOfL1}/dynamic-silicon-conf.json
+    wget https://raw.githubusercontent.com/0xSilicon/permissionless-node-infra/main/config/${var.nameOfL1}/rpc.config.yaml
     echo "zkevm.l1-rpc-url: \"${local.ethermanurl}\"" | tee -a rpc.config.yaml
     popd
 
